@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+	background-image: radial-gradient(#999ccc 0.4px, transparent 0.4px),
+		radial-gradient(#999ccc 0.4px, #e5e5f7 0.4px);
+	background-size: 16px 16px;
+	background-position: 0 0, 8px 8px;
+	background-attachment: fixed; /*edit*/
+}
+
+/* Basic styles for the text container */
+.underline-animation {
+	position: relative; /* Important for absolute positioning of the underline */
+	padding-bottom: 5px; /* To create space for the rotated underline */
+}
+
+/* Styling for the underline */
+.underline-animation::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 5px;
+	background-image: linear-gradient(transparent, transparent), linear-gradient(#999ccc, #999ccc);
+	background-size: 100% 5px;
+	background-position: 0 100%;
+	background-repeat: no-repeat;
+	transition: background-size 0.5s ease-in-out, transform 0.5s ease-in-out;
+	rotate: -2deg;
+}
+
+/* Animation and Rotation */
+@keyframes animateUnderline {
+	0% {
+		background-size: 0% 5px;
+	}
+	50% {
+		background-size: 100% 5px;
+	}
+}
+
+/* Apply the animation to the underline pseudo-element */
+.underline-animation::after {
+	animation: animateUnderline 1s;
+}
