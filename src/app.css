@@ -7,16 +7,14 @@ body {
 		radial-gradient(#999ccc 0.4px, #e5e5f7 0.4px);
 	background-size: 16px 16px;
 	background-position: 0 0, 8px 8px;
-	background-attachment: fixed; /*edit*/
+	background-attachment: fixed; 
 }
 
-/* Basic styles for the text container */
 .underline-animation {
-	position: relative; /* Important for absolute positioning of the underline */
-	padding-bottom: 5px; /* To create space for the rotated underline */
+	position: relative;
+	padding-bottom: 5px;
 }
 
-/* Styling for the underline */
 .underline-animation::after {
 	content: '';
 	position: absolute;
@@ -24,7 +22,7 @@ body {
 	left: 0;
 	width: 100%;
 	height: 5px;
-	background-image: linear-gradient(transparent, transparent), linear-gradient(#999ccc, #999ccc);
+	background-image: linear-gradient(transparent, transparent), linear-gradient(rgb(147 51 234) , rgb(147 51 234) );
 	background-size: 100% 5px;
 	background-position: 0 100%;
 	background-repeat: no-repeat;
@@ -32,7 +30,6 @@ body {
 	rotate: -2deg;
 }
 
-/* Animation and Rotation */
 @keyframes animateUnderline {
 	0% {
 		background-size: 0% 5px;
@@ -42,7 +39,6 @@ body {
 	}
 }
 
-/* Apply the animation to the underline pseudo-element */
 .underline-animation::after {
 	animation: animateUnderline 1s;
 }
