@@ -13,6 +13,7 @@ Transform and optimize your SVGs by generating an efficient sprite. This tool he
 Still not convinced about the benefits? Dive deeper into the topic:
 
 - [Ben Adam's blog post](https://benadam.me/thoughts/react-svg-sprites/)
+- [Jacob Paris's insights on SVG icons](https://www.jacobparis.com/content/svg-icons)
 - [Kent C. Dodds' Epic Stack documentation](https://github.com/epicweb-dev/epic-stack/blob/2c2a65d7e8d27c0e4e9bb00534d136a43a9d804d/docs/decisions/020-icons.md)
 
 ## Tech Stack

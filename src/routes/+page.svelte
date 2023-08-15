@@ -192,6 +192,12 @@
 						class="text-purple-500 hover:underline"
 						target="_blank"
 						rel="noopener noreferrer">Ben Adam blog post</a
+					>,
+					<a
+						href="https://www.jacobparis.com/content/svg-icons"
+						class="text-purple-500 hover:underline"
+						target="_blank"
+						rel="noopener noreferrer">Jacob Paris blog post</a
 					>
 					or
 					<a
