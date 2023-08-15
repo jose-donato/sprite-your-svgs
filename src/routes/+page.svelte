@@ -207,7 +207,7 @@
 						rel="noopener noreferrer"
 					>
 						Kent C. Dodds' Epic Stack documentation
-					</a>.
+					</a>
 				</p>
 			</div>
 		</div>
