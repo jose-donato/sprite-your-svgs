@@ -24,7 +24,6 @@
 	$: {
 		if (typeof window !== 'undefined') {
 			if (form) {
-				console.log(form);
 				if (!entered) {
 					if (form.status === 'success') {
 						addToast({
@@ -156,7 +155,7 @@
 	aria-roledescription="Drag and drop an SVG file here to convert it to a sprite."
 >
 	<a
-		href=""
+		href="https://github.com/jose-donato/sprite-your-svgs"
 		target="_blank"
 		rel="noopener noreferrer"
 		class="fixed top-8 right-8 bg-zinc-700 border border-zinc-400 px-2 py-1 text-white rounded-lg flex items-center gap-2 hover:bg-zinc-600 transition-colors duration-200 ease-in-out active:scale-95"
@@ -168,7 +167,7 @@
 		<div class="text-center">
 			<h1 class="text-3xl font-bold mt-2 mb-4">
 				<span class="underline-animation"> Sprite </span>
-				your SVG
+				your SVGs
 			</h1>
 			<div class="flex justify-center items-center flex-col gap-2">
 				<p>Paste your SVG code below to generate an optimized sprite. Why?</p>
