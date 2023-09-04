@@ -8,6 +8,7 @@ export const actions = {
 		const svg = formData.get('svg');
 		const slug = formData.get('slug');
 		const includeSvg = formData.get('includeSvgTag') === 'on';
+		const replaceColors = formData.get('replaceColors') === 'on';
 
 		if (!svg || typeof svg !== 'string') {
 			return fail(400, {
@@ -23,7 +24,8 @@ export const actions = {
 
 		const result = treatSvg(svg,
 			slug ? slug.toString() : generateRandomId(),
-			includeSvg
+			includeSvg,
+			replaceColors
 		);
 
 		return {
@@ -47,8 +49,32 @@ function validateSvg(svg: string) {
 	return true;
 }
 
-function treatSvg(svg: string, id: string, includeSvgTag = false) {
-	const result = optimize(svg, {
+
+type OptimizationOptions = {
+	plugins: Array<{
+		name: string,
+		params: {
+			overrides: Record<string, any>
+		}
+	}>
+};
+
+function optimizeSVG(svg: string, options: OptimizationOptions): string {
+	return optimize(svg, options).data.trim();
+}
+
+function wrapWithSymbol(svg: string, id: string): string {
+	return svg.replace(/^<svg/, `<symbol id="${id}"`).replace(/<\/svg>$/, '</symbol>');
+}
+
+function replaceSVGColors(svg: string): string {
+	return svg.replace(/fill="(?![^"]*none)[^"]+"/g, 'fill="currentColor"')
+		.replace(/stroke="[^"]+"/g, 'stroke="currentColor"');
+}
+
+
+function treatSvg(svg: string, id: string, wrapSymbolWithSvg = false, replaceColors = false): string {
+	const optimizationOptions: OptimizationOptions = {
 		plugins: [
 			{
 				name: 'preset-default',
@@ -73,12 +99,19 @@ function treatSvg(svg: string, id: string, includeSvgTag = false) {
 				}
 			}
 		]
-	});
+	};
 
-	const svgString = result.data
-		.trim()
-		.replace(/^<svg/, '<symbol id="' + id + '"')
-		.replace(/<\/svg>$/, '</symbol>');
+	let svgString = optimizeSVG(svg, optimizationOptions);
+	svgString = wrapWithSymbol(svgString, id);
+
+	if (replaceColors) {
+		svgString = replaceSVGColors(svgString);
+	}
+
+	if (wrapSymbolWithSvg) {
+		svgString = `<svg>${svgString}</svg>`;
+	}
 
 	return svgString;
 }
+

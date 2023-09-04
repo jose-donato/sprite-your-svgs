@@ -28,16 +28,17 @@
 					if (form.status === 'success') {
 						addToast({
 							data: {
-								title: 'Success',
-								description: 'Your sprite has been generated. You can copy the code below.',
+								title: 'Sprite generated',
+								description: 'Sprite copied to clipboard.',
 								color: 'bg-green-500'
 							}
 						});
+						navigator.clipboard.writeText(form.result);
 						setTimeout(() => {
 							if (resultPre) {
 								hljs.highlightElement(resultPre);
 							}
-						}, 400);
+						}, 200);
 					} else {
 						addToast({
 							data: {
@@ -248,6 +249,14 @@
 						class="block w-full p-4 text-gray-900 accent-purple-500 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-purple-500 focus:border-purple-500"
 					/>
 				</label>
+				<label class="mb-2 text-sm font-medium text-gray-900 flex gap-2 whitespace-nowrap">
+					Replace colors with currentColor
+					<input
+						type="checkbox"
+						name="replaceColors"
+						class="block w-full p-4 text-gray-900 accent-purple-500 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-purple-500 focus:border-purple-500"
+					/>
+				</label>
 				<div class="self-end">
 					<button
 						class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none"
@@ -262,7 +271,7 @@
 				<h2 class="font-bold text-lg mb-4">Result</h2>
 				<pre>
 						<code class="xml border border-gray-300 rounded-lg bg-gray-50 !text-xs !p-1" bind:this={resultPre}>
-							{#if form.result}
+{#if form.result}
 							{formatSVG(form.result)}
 						{/if}
 					</code>
