@@ -1,42 +1,48 @@
-import { fail, type Actions } from '@sveltejs/kit';
-import { optimize } from 'svgo';
+import { type Actions, fail } from "@sveltejs/kit";
+import { optimize } from "svgo";
 
 export const actions = {
 	default: async ({ request }) => {
 		const formData = await request.formData();
 
-		const svg = formData.get('svg');
-		const slug = formData.get('slug');
-		const includeSvg = formData.get('includeSvgTag') === 'on';
-		const replaceColors = formData.get('replaceColors') === 'on';
+		const svg = formData.get("svg");
+		const slug = formData.get("slug");
+		const includeSvg = formData.get("includeSvgTag") === "on";
+		const replaceColors = formData.get("replaceColors") === "on";
+		const keepDimensions = formData.get("keepDimensions") === "on";
 
-		if (!svg || typeof svg !== 'string') {
+		if (!svg || typeof svg !== "string") {
 			return fail(400, {
-				message: 'No SVG provided'
+				message: "No SVG provided",
 			});
 		}
 
 		if (!validateSvg(svg)) {
 			return fail(400, {
-				message: 'Invalid SVG provided'
+				message: "Invalid SVG provided",
 			});
 		}
 
-		const result = treatSvg(svg,
+		const result = treatSvg(
+			svg,
 			slug ? slug.toString() : generateRandomId(),
 			includeSvg,
-			replaceColors
+			replaceColors,
+			keepDimensions,
 		);
 
 		return {
 			result,
-			status: 'success'
+			status: "success",
 		};
-	}
+	},
 } satisfies Actions;
 
 function generateRandomId() {
-	return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+	return (
+		Math.random().toString(36).substring(2, 15) +
+		Math.random().toString(36).substring(2, 15)
+	);
 }
 
 function validateSvg(svg: string) {
@@ -49,14 +55,14 @@ function validateSvg(svg: string) {
 	return true;
 }
 
-
 type OptimizationOptions = {
 	plugins: Array<{
-		name: string,
-		params: {
-			overrides: Record<string, any>
-		}
-	}>
+		name: string;
+		params?: {
+			overrides: Record<string, any>;
+		};
+		active?: boolean;
+	}>;
 };
 
 function optimizeSVG(svg: string, options: OptimizationOptions): string {
@@ -64,20 +70,28 @@ function optimizeSVG(svg: string, options: OptimizationOptions): string {
 }
 
 function wrapWithSymbol(svg: string, id: string): string {
-	return svg.replace(/^<svg/, `<symbol id="${id}"`).replace(/<\/svg>$/, '</symbol>');
+	return svg
+		.replace(/^<svg/, `<symbol id="${id}"`)
+		.replace(/<\/svg>$/, "</symbol>");
 }
 
 function replaceSVGColors(svg: string): string {
-	return svg.replace(/fill="(?![^"]*none)[^"]+"/g, 'fill="currentColor"')
+	return svg
+		.replace(/fill="(?![^"]*none)[^"]+"/g, 'fill="currentColor"')
 		.replace(/stroke="[^"]+"/g, 'stroke="currentColor"');
 }
 
-
-function treatSvg(svg: string, id: string, wrapSymbolWithSvg = false, replaceColors = false): string {
+function treatSvg(
+	svg: string,
+	id: string,
+	wrapSymbolWithSvg = false,
+	replaceColors = false,
+	keepDimensions = false,
+): string {
 	const optimizationOptions: OptimizationOptions = {
 		plugins: [
 			{
-				name: 'preset-default',
+				name: "preset-default",
 				params: {
 					overrides: {
 						mergePaths: {},
@@ -87,18 +101,26 @@ function treatSvg(svg: string, id: string, wrapSymbolWithSvg = false, replaceCol
 						collapseGroups: false,
 						removeNonInheritableGroupAttrs: false,
 						cleanupIds: {
-							remove: false
+							remove: false,
 						},
 						cleanupAttrs: {},
 						convertPathData: {
 							removeUseless: true,
 							lineShorthands: true,
 							applyTransforms: true,
-						}
-					}
-				}
-			}
-		]
+						},
+					},
+				},
+			},
+			...(keepDimensions
+				? []
+				: [
+						{
+							name: "removeDimensions",
+							active: !keepDimensions,
+						},
+					]),
+		],
 	};
 
 	let svgString = optimizeSVG(svg, optimizationOptions);
@@ -114,4 +136,3 @@ function treatSvg(svg: string, id: string, wrapSymbolWithSvg = false, replaceCol
 
 	return svgString;
 }
-
