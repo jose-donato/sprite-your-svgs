@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import hljs from 'highlight.js';
 	import vkbeautify from 'vkbeautify';
 	import HowTo from '$lib/components/HowTo.svelte';
@@ -20,6 +21,7 @@
 	let resultPre: HTMLPreElement | null = null;
 
 	$: fileSlug = fileName.replace('.svg', '');
+	$: isSimplified = $page.url.searchParams.get('simplify') === 'true';
 
 	$: {
 		if (typeof window !== 'undefined') {
@@ -155,6 +157,7 @@
 	role="document"
 	aria-roledescription="Drag and drop an SVG file here to convert it to a sprite."
 >
+	{#if !isSimplified}
 	<a
 		href="https://github.com/jose-donato/sprite-your-svgs"
 		target="_blank"
@@ -164,10 +167,11 @@
 		<Icon class="w-4 h-4 text-white" name="star-icon" />
 		Star on GitHub
 	</a>
+	{/if}
 	<div class="mx-auto my-10 space-y-10 container">
 		<div class="text-center">
 			<h1 class="text-3xl font-bold mt-2 mb-4">
-				<span class="underline-animation"> Sprite </span>
+				<span class={isSimplified ? "" : "underline-animation"}> Sprite </span>
 				your SVGs
 			</h1>
 			<div class="flex justify-center items-center flex-col gap-2">
@@ -308,6 +312,7 @@
 			</div>
 		{/if}
 	</div>
+	{#if !isSimplified}
 	<p class="text-center text-sm mb-10">
 		Built by <a
 			class="text-purple-500 hover:underline"
@@ -318,6 +323,7 @@
 			José Donato
 		</a> using Sveltekit, TailwindCSS and melt-ui.
 	</p>
+	{/if}
 </div>
 
 <style>
